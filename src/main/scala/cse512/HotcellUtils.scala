@@ -47,5 +47,43 @@ object HotcellUtils {
     return calendar.get(Calendar.DAY_OF_MONTH)
   }
 
+  def find_square_val(x:Int):Double=
+  {
+    return (x*x).toDouble;
+  }
+
+  def numberOfNeighbours(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int, x: Int, y: Int, z: Int): Int = 
+  {
+    var count = 0;
+    
+    if (x == minX || x == maxX) {
+      count += 1;
+    }
+    if (y == minY || y == maxY) {
+      count += 1;
+    }
+    if (z == minZ || z == maxZ) {
+      count += 1;
+    }
+
+    if (count == 0) {
+      return 26;
+    }
+    else {
+      if (count == 1) {
+        return 17;
+      }
+
+      if (count == 2) {
+        return 11;
+      }
+
+      if (count == 3){
+        return 7;
+      }
+    }
+
+  }
+
   // YOU NEED TO CHANGE THIS PART
 }
