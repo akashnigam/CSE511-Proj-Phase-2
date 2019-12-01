@@ -40,17 +40,17 @@ def runHotcellAnalysis(spark: SparkSession, pointPath: String): DataFrame =
   val maxY = 40.90/HotcellUtils.coordinateStep
   val minZ = 1
   val maxZ = 31
-  val numCells = (maxX - minX + 1)*(maxY - minY + 1)*(maxZ - minZ + 1)
+  var numCells = (maxX - minX + 1)*(maxY - minY + 1)*(maxZ - minZ + 1)
   numCells = numCells.toDouble
 
   // YOU NEED TO CHANGE THIS PART
-  val temp = spark.sql("select x,y,z from pickupInfo where x >= " + minX + " and x <= " + 
+  val temp = spark.sql("select x,y,z from pickupInfo where x >= " + minX + " and x <= " +
     maxX + " and y >= " + minY + " and y<= " + maxY + " and z>= " + minZ + " and z<= " + 
     maxZ + " order by z,y,x")
   temp.createOrReplaceTempView("selectedCells")
 
-  temp = spark.sql("select x,y,z count(*) as hotCells from selectedCells group by x,y,z order by 3,2,1")
-  temp.createOrReplaceTempView("SelectedCellsWithHotness")
+  val temp1 = spark.sql("select x,y,z count(*) as hotCells from selectedCells group by x,y,z order by 3,2,1")
+  temp1.createOrReplaceTempView("SelectedCellsWithHotness")
 
   spark.udf.register("find_square_val", (x: Int) => ((HotcellUtils.find_square_val(x))))
   val squared_hot_cells = spark.sql("select sum(find_square_val(hotCells)) as squared_hot_cells from SelectedCellsWithHotness")
