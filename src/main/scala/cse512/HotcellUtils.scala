@@ -63,54 +63,11 @@ object HotcellUtils {
     return (numerator / denomerator).toDouble
   }
 
-  def numberOfNeighbours(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int, x: Int, y: Int, z: Int): Int = 
-  {
-    var count = 0;
-    
-    if (x == minX || x == maxX) {
-      count += 1;
-    }
-    if (y == minY || y == maxY) {
-      count += 1;
-    }
-    if (z == minZ || z == maxZ) {
-      count += 1;
-    }
-
-    if (count == 1) {
-      return 17;
-    } else if (count == 2) {
-      return 11;
-    } else if (count == 3) {
-      return 7;
-    }
-
-    return 26;
-
-    /*if (count == 0) {
-      return 26;
-    }
-    else {
-      if (count == 1) {
-        return 17;
-      }
-
-      if (count == 2) {
-        return 11;
-      }
-
-      //if (count == 3){
-        return 7;
-      //}
-    }*/
-
-  }
-
   def numberOfNeighboursFound(x: Int, y: Int, z: Int, minX: Int, maxX: Int, minY: Int, maxY: Int, minZ: Int, maxZ: Int): Int =
   {
     var count = 0
 
-    if (x == minX || x == maxX) {
+    if (z == minZ || z == maxZ) {
       count += 1
     }
 
@@ -118,16 +75,20 @@ object HotcellUtils {
       count += 1
     }
 
-    if (z == minZ || z == maxZ) {
+    if (x == minX || x == maxX) {
       count += 1
+    }
+
+    if (count == 3) {
+      return 7;
+    }
+
+    if (count == 2) {
+      return 11;
     }
 
     if (count == 1) {
       return 17;
-    } else if (count == 2) {
-      return 11;
-    } else if (count == 3) {
-      return 7;
     }
 
     return 26;
