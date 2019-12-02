@@ -33,6 +33,8 @@ def runHotcellAnalysis(spark: SparkSession, pointPath: String): DataFrame =
   pickupInfo = pickupInfo.toDF(newCoordinateName:_*)
   pickupInfo.show()
 
+  pickupInfo.createOrReplaceTempView("pickupInfo")
+
   // Define the min and max of x, y, z
   val minX = -74.50/HotcellUtils.coordinateStep
   val maxX = -73.70/HotcellUtils.coordinateStep
@@ -48,7 +50,8 @@ def runHotcellAnalysis(spark: SparkSession, pointPath: String): DataFrame =
     maxZ + " order by z,y,x")
   temp.createOrReplaceTempView("selectedCells")
 
-  val temp1 = spark.sql("select x,y,z count(*) as hotCells from selectedCells group by x,y,z order by 3,2,1")
+  //val temp1 = spark.sql("select x, y, z, count(*) as hotCells from selectedCells group by x, y, z order by z,y,x")
+  val temp1 = spark.sql("select x,y,z, count(*) as hotCells from selectedCells group by x,y,z order by z,y,x")
   temp1.createOrReplaceTempView("SelectedCellsWithHotness")
 
   spark.udf.register("find_square_val", (x: Int) => ((HotcellUtils.find_square_val(x))))
@@ -64,6 +67,8 @@ def runHotcellAnalysis(spark: SparkSession, pointPath: String): DataFrame =
   var mean_squared = (mean_hotness.toDouble * mean_hotness.toDouble).toDouble
   var sd = scala.math.sqrt(sq_hotcells_by_numCells - mean_squared).toDouble
 
+  spark.udf.register("numberOfNeighbours", (minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int, x: Int, y: Int, z: Int) => ((HotcellUtils.numberOfNeighbours(minX, minY, minZ, maxX, maxY, maxZ, x, y, z))))
+
   //val NeighbourCells = spark.sql("select adjacentCells(s1.x, s1.y, s1.z, " + minX + "," + maxX + "," + minY + "," + maxY + "," + minZ + "," + maxZ + ") as neighbourCount,"
   val NeighbourCells = spark.sql("select numberOfNeighbours(" + minX + "," + minY + "," + minZ + "," + maxX + "," + maxY + "," + maxZ + ", s1.x, s1.y, s1.z) as neighbourCount,"
       + "s1.x as x, s1.y as y, s1.z as z, sum(1) as counthcells "
@@ -77,9 +82,9 @@ def runHotcellAnalysis(spark: SparkSession, pointPath: String): DataFrame =
 
   spark.udf.register("calculateZScore", (neighbourCellCount: Int, counthcells: Int, n: Int, mean: Double, sd: Double) => ((HotcellUtils.calculateZScore(neighbourCellCount, counthcells, n, mean, sd))))
 
-  pickupInfo = spark.sql("select x, y, z from (select calculateZScore(neighbourCount, counthcells, "+ numCells + "," + mean + ", " + sd + ") as zScore, x, y, z from NeighbourCells order by zScore desc)");
+  pickupInfo = spark.sql("select x, y, z from (select calculateZScore(neighbourCount, counthcells, "+ numCells + "," + mean_hotness + ", " + sd + ") as zScore, x, y, z from NeighbourCells order by zScore desc)");
   pickupInfo.createOrReplaceTempView("zScore")
-  // pickupInfo.show()
+  pickupInfo.show()
   return pickupInfo // YOU NEED TO CHANGE THIS PART
 }
 }

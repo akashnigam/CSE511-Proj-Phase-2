@@ -55,7 +55,7 @@ object HotcellUtils {
   
   def calculateZScore(neighbourCellCount: Int, counthcells: Int, n: Int, mean: Double, sd: Double): Double =
   {
-    val numerator = (sumOfHotCells.toDouble - (mean*neighbourCellCount).toDouble).toDouble
+    val numerator = (counthcells.toDouble - (mean*neighbourCellCount).toDouble).toDouble
 
     val denom1 = ((n.toDouble * neighbourCellCount.toDouble) - (neighbourCellCount.toDouble * neighbourCellCount.toDouble) / (n.toDouble - 1.0).toDouble).toDouble
     val denomerator = sd * math.sqrt(denom1).toDouble
@@ -89,9 +89,9 @@ object HotcellUtils {
         return 11;
       }
 
-      if (count == 3){
+      //if (count == 3){
         return 7;
-      }
+      //}
     }
 
   }
