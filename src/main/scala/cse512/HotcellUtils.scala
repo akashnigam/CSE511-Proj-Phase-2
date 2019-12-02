@@ -77,7 +77,17 @@ object HotcellUtils {
       count += 1;
     }
 
-    if (count == 0) {
+    if (count == 1) {
+      return 17;
+    } else if (count == 2) {
+      return 11;
+    } else if (count == 3) {
+      return 7;
+    }
+
+    return 26;
+
+    /*if (count == 0) {
       return 26;
     }
     else {
@@ -92,8 +102,35 @@ object HotcellUtils {
       //if (count == 3){
         return 7;
       //}
+    }*/
+
+  }
+
+  def numberOfNeighboursFound(x: Int, y: Int, z: Int, minX: Int, maxX: Int, minY: Int, maxY: Int, minZ: Int, maxZ: Int): Int =
+  {
+    var count = 0
+
+    if (x == minX || x == maxX) {
+      count += 1
     }
 
+    if (y == minY || y == maxY) {
+      count += 1
+    }
+
+    if (z == minZ || z == maxZ) {
+      count += 1
+    }
+
+    if (count == 1) {
+      return 17;
+    } else if (count == 2) {
+      return 11;
+    } else if (count == 3) {
+      return 7;
+    }
+
+    return 26;
   }
 
   // YOU NEED TO CHANGE THIS PART
