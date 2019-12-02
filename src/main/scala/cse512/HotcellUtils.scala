@@ -55,12 +55,12 @@ object HotcellUtils {
   
   def calculateZScore(neighbourCellCount: Int, counthcells: Int, n: Int, mean: Double, sd: Double): Double =
   {
-    val numerator = (counthcells.toDouble - (mean*neighbourCellCount).toDouble).toDouble
+    val numerator = (counthcells.toDouble - (mean*neighbourCellCount))
 
     val denom1 = ((n.toDouble * neighbourCellCount.toDouble) - (neighbourCellCount.toDouble * neighbourCellCount.toDouble) / (n.toDouble - 1.0).toDouble).toDouble
-    val denomerator = sd * math.sqrt(denom1).toDouble
+    val denomerator = sd * math.sqrt(denom1)
     
-    return (numerator / denomerator).toDouble
+    return (numerator / denomerator)
   }
 
   def numberOfNeighboursFound(x: Int, y: Int, z: Int, minX: Int, maxX: Int, minY: Int, maxY: Int, minZ: Int, maxZ: Int): Int =
